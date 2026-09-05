@@ -214,6 +214,14 @@
   .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
 
 
+  @media(max-width:900px){
+    .nav{height:64px}
+    .brand .logo{width:40px;height:40px}
+    .brand-name{font-size:1.4rem}
+    .burger{display:block}
+    .menu{position:fixed;inset:64px 0 auto 0;background:var(--surface);flex-direction:column;align-items:flex-start;gap:1.4rem;padding:1.8rem 2rem 2.4rem;border-bottom:1px solid var(--line);transform:translateY(-135%);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+    body.menu-open .menu{transform:translateY(0)}
+  }
   @media(max-width:960px){
     .cours-grid{grid-template-columns:repeat(2,1fr)}
     .plan-grid{grid-template-columns:repeat(4,1fr)}
@@ -452,7 +460,7 @@
     <div class="price-grid">
       <div class="price reveal"><h3>Cours à l'unité</h3>
         <ul>
-          <li><span class="check">✓</span><span class="main">Initiation — 15€</span></li>
+          <li><span class="check">✓</span><span class="main">Initiation — 20€</span></li>
           <li><span class="check">✓</span><span class="main">Cours unitaire — 30€</span></li>
           <li><span class="check">✓</span><span class="main">EVJF / Anniversaire — 30€/pers</span></li>
         </ul>
@@ -510,7 +518,6 @@
       <nav class="foot-links">
         <a data-nav href="#p-studio">Le studio</a><a data-nav href="#p-profs">Les profs</a><a data-nav href="#p-cours">Cours</a><a data-nav href="#p-planning">Planning</a><a data-nav href="#p-tarifs">Tarifs</a><a data-nav href="#p-contact">Contact</a>
       </nav>
-      <p class="foot-tag">Une parenthèse pour soi</p>
     </div>
     <div class="foot-bottom">
       <span>© 2026 Parenthèses Pole Dance · Castelnau-le-Lez</span>
