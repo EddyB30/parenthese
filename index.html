@@ -246,6 +246,28 @@
     .course-card{aspect-ratio:3/3.4}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}
+
+  /* réservation modale */
+  .reserve-overlay{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:1.5rem;background:rgba(30,36,28,.5);backdrop-filter:blur(4px)}
+  body.reserve-open{overflow:hidden}
+  body.reserve-open .reserve-overlay{display:flex}
+  .reserve-card{background:var(--surface);border-radius:22px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:clamp(1.8rem,4vw,2.8rem);position:relative;box-shadow:0 40px 80px -30px rgba(30,36,28,.6)}
+  .reserve-card .close{position:absolute;top:.9rem;right:.9rem;width:40px;height:40px;border:none;background:none;cursor:pointer;font-size:1.7rem;line-height:1;color:var(--muted)}
+  .reserve-card .close:hover{color:var(--forest)}
+  .reserve-card .eyebrow{display:inline-block}
+  .reserve-card h3{font-family:var(--display);font-size:clamp(1.9rem,4vw,2.6rem);color:var(--forest);margin:.5rem 0 .4rem;line-height:1.05}
+  .reserve-card p.sub{color:var(--muted);font-size:.95rem;margin-bottom:1.6rem}
+  .rfield{margin-bottom:1rem}
+  .rfield label{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--forest-2);margin-bottom:.4rem}
+  .rfield input,.rfield select,.rfield textarea{width:100%;padding:.8rem .9rem;border:1px solid var(--line);border-radius:12px;background:#fff;font-family:var(--body);font-size:1rem;color:var(--ink)}
+  .rfield textarea{min-height:92px;resize:vertical}
+  .rfield input:focus,.rfield select:focus,.rfield textarea:focus{outline:none;border-color:var(--sage-deep);box-shadow:0 0 0 3px rgba(169,184,158,.25)}
+  .rrow{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .reserve-submit{width:100%;margin-top:.5rem;background:var(--sage);color:var(--forest);border:none;border-radius:999px;padding:1rem;font-family:var(--body);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background .3s,transform .3s}
+  .reserve-submit:hover{background:var(--sage-deep);transform:translateY(-1px)}
+  .reserve-note{text-align:center;font-size:.8rem;color:var(--muted);margin-top:.9rem}
+  .reserve-note a{border-bottom:1px solid var(--line)}
+  @media(max-width:520px){.rrow{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -263,7 +285,7 @@
       <a class="link" data-nav href="#p-planning">Planning</a>
       <a class="link" data-nav href="#p-tarifs">Tarifs</a>
       <a class="link" data-nav href="#p-contact">Contact</a>
-      <a class="btn-reserve" data-nav href="#p-contact">Réserver</a>
+      <a class="btn-reserve" href="#p-contact" data-reserve>Réserver</a>
     </nav>
     <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="menu"><span></span><span></span><span></span></button>
   </div>
@@ -464,14 +486,14 @@
           <li><span class="check">✓</span><span class="main">Cours unitaire — 30€</span></li>
           <li><span class="check">✓</span><span class="main">EVJF / Anniversaire — 30€/pers</span></li>
         </ul>
-        <a href="#p-contact" data-nav class="price-cta">Réserver</a></div>
+        <a href="#p-contact" class="price-cta" data-reserve data-formule="Cours à l'unité">Réserver</a></div>
       <div class="price reveal d1"><h3>Cartes</h3>
         <ul>
           <li><span class="check">✓</span><span class="main">Carte 40 cours — 700€</span><span class="sub">17,50€/cours · Validité 1 an</span></li>
           <li><span class="check">✓</span><span class="main">Carte 20 cours — 450€</span><span class="sub">22,50€/cours · Validité 6 mois</span></li>
           <li><span class="check">✓</span><span class="main">Carte 10 cours — 250€</span><span class="sub">25€/cours · Validité 4 mois</span></li>
         </ul>
-        <a href="#p-contact" data-nav class="price-cta">Réserver</a></div>
+        <a href="#p-contact" class="price-cta" data-reserve data-formule="Cartes">Réserver</a></div>
       <div class="price feature reveal d2"><span class="badge">Le plus choisi</span><h3>Abonnement mensuel</h3>
         <ul>
           <li><span class="check">✓</span><span class="main">4 cours/mois — 65€</span><span class="sub">16,25€/cours</span></li>
@@ -479,7 +501,7 @@
           <li><span class="check">✓</span><span class="main">12 cours/mois — 130€</span><span class="sub">10,83€/cours</span></li>
         </ul>
         <p class="engage">Engagement 6 mois</p>
-        <a href="#p-contact" data-nav class="price-cta">Réserver</a></div>
+        <a href="#p-contact" class="price-cta" data-reserve data-formule="Abonnement mensuel">Réserver</a></div>
     </div>
   </div>
 </section>
@@ -549,6 +571,77 @@
     entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
   }, {threshold:.16, rootMargin:'0px 0px -8% 0px'});
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+<div class="reserve-overlay" id="reserve-modal" role="dialog" aria-modal="true" aria-labelledby="reserve-title">
+  <div class="reserve-card">
+    <button class="close" data-close aria-label="Fermer">&times;</button>
+    <span class="eyebrow">Réservation</span>
+    <h3 id="reserve-title">Réserver un cours</h3>
+    <p class="sub">Renseigne tes infos : le formulaire ouvrira ton application mail avec un message pré-rempli, prêt à envoyer au studio.</p>
+    <form id="reserve-form" novalidate>
+      <div class="rrow">
+        <div class="rfield"><label for="r-nom">Prénom &amp; nom</label><input id="r-nom" name="nom" type="text" required></div>
+        <div class="rfield"><label for="r-tel">Téléphone</label><input id="r-tel" name="tel" type="tel"></div>
+      </div>
+      <div class="rfield"><label for="r-email">Email</label><input id="r-email" name="email" type="email" required></div>
+      <div class="rrow">
+        <div class="rfield"><label for="r-formule">Formule</label><select id="r-formule" name="formule">
+          <option>Cours d'essai / Initiation</option>
+          <option>Cours à l'unité</option>
+          <option>Cartes</option>
+          <option>Abonnement mensuel</option>
+          <option>EVJF / Événement</option>
+          <option>Autre</option>
+        </select></div>
+        <div class="rfield"><label for="r-cours">Cours souhaité</label><input id="r-cours" name="cours" type="text" placeholder="Pole Dance, Exotic…"></div>
+      </div>
+      <div class="rfield"><label for="r-message">Message</label><textarea id="r-message" name="message" placeholder="Tes disponibilités, ton niveau, tes questions…"></textarea></div>
+      <button class="reserve-submit" type="submit">Envoyer ma demande</button>
+      <p class="reserve-note">Tu peux aussi écrire directement à <a href="mailto:parenthese.poledance@gmail.com">parenthese.poledance@gmail.com</a></p>
+    </form>
+  </div>
+</div>
+<script>
+(function(){
+  const modal=document.getElementById('reserve-modal');
+  const body=document.body;
+  const open=(formule)=>{
+    if(formule){const s=document.getElementById('r-formule');
+      [...s.options].forEach(o=>{if(o.value===formule)s.value=formule;});}
+    body.classList.add('reserve-open'); body.classList.remove('menu-open');
+    setTimeout(()=>document.getElementById('r-nom').focus(),50);
+  };
+  const close=()=>body.classList.remove('reserve-open');
+  document.querySelectorAll('[data-reserve]').forEach(b=>{
+    b.addEventListener('click',e=>{e.preventDefault();open(b.dataset.formule);});
+  });
+  modal.querySelector('[data-close]').addEventListener('click',close);
+  modal.addEventListener('click',e=>{if(e.target===modal)close();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  document.getElementById('reserve-form').addEventListener('submit',e=>{
+    e.preventDefault();
+    const v=id=>document.getElementById(id).value.trim();
+    const nom=v('r-nom'),email=v('r-email');
+    if(!nom||!email){alert('Merci d’indiquer au moins ton nom et ton email.');return;}
+    const tel=v('r-tel'),formule=v('r-formule'),cours=v('r-cours'),msg=v('r-message');
+    const subject='Demande de réservation — '+(formule||'Parenthèses');
+    const body_lines=[
+      'Bonjour,','',
+      'Je souhaite réserver / obtenir des informations.','',
+      'Nom : '+nom,
+      'Email : '+email,
+      'Téléphone : '+(tel||'—'),
+      'Formule : '+(formule||'—'),
+      'Cours souhaité : '+(cours||'—'),'',
+      'Message :',(msg||'—'),'',
+      'Merci !'
+    ].join('\n');
+    window.location.href='mailto:parenthese.poledance@gmail.com?subject='
+      +encodeURIComponent(subject)+'&body='+encodeURIComponent(body_lines);
+    close();
+  });
+})();
 </script>
 </body>
 </html>
