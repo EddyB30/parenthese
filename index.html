@@ -328,6 +328,7 @@
   @media(max-width:900px){
     #p-hero{align-items:flex-end}
     #p-hero .hero-fade{background:linear-gradient(180deg,rgba(48,58,48,.32) 0%,rgba(48,58,48,.28) 42%,rgba(40,48,38,.92) 100%)}
+    #p-hero .hero-slide img{object-position:78% center}
     #p-hero .hero-inner{text-align:center}
   }
   .section-sep{max-width:1280px;margin:clamp(.5rem,1.5vw,1.5rem) auto;padding:0 clamp(1.25rem,4vw,2.5rem);display:flex;align-items:center;justify-content:center;gap:1.3rem}
@@ -336,6 +337,10 @@
   .section-sep::after{background:linear-gradient(270deg,transparent,var(--line))}
   .section-sep span{width:7px;height:7px;transform:rotate(45deg);background:var(--sage-deep);opacity:.7;flex:none}
   #p-profs .founders{grid-template-columns:1fr;gap:clamp(1.6rem,3.5vw,2.4rem);max-width:720px;margin-left:auto;margin-right:auto}
+  /* Les profs — textes centrés sous les images */
+  #p-profs .prof-body{text-align:center}
+  #p-profs .founders-copy{text-align:center}
+  #p-profs .founders-copy p{margin-left:auto;margin-right:auto}
 </style>
 </head>
 <body>
